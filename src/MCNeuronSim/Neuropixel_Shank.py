@@ -1,5 +1,8 @@
-import Neuron
-import Electrode
+import sys
+sys.path.append('.../')
+from MCNeuronSim import Neuron
+from MCNeuronSim import Electrode
+
 import matplotlib.animation as animation
 from IPython import display
 
