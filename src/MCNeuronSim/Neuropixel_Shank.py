@@ -1,11 +1,14 @@
-import sys
-sys.path.append('.../')
-from MCNeuronSim import Neuron
-from MCNeuronSim import Electrode
+import MCNeuronSim.src.MCNeuronSim.Electrode as MCE
+import MCNeuronSim.src.MCNeuronSim.Neuron as MCN
 
+import numpy as np
+import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython import display
+from matplotlib.colors import ListedColormap
 
+#defining custom colormap
+cmap = ListedColormap(["grey","black","white"])
 
 
 
@@ -45,18 +48,18 @@ class Neuropixel_Shank:
         
         #initializing electrode array (I hardcoded the electrode locations because the neuropixel is static)
         self.num_E = 12
-        self.Electrode_1 = Electrode(self.samp_rate, (-24.6,50), "1")
-        self.Electrode_2 = Electrode(self.samp_rate, (8.2,50), "2")
-        self.Electrode_3 = Electrode(self.samp_rate, (-8.2,30), "3")
-        self.Electrode_4 = Electrode(self.samp_rate, (24.6,30), "4")
-        self.Electrode_5 = Electrode(self.samp_rate, (-24.6,10), "5")
-        self.Electrode_6 = Electrode(self.samp_rate, (8.2,10), "6")
-        self.Electrode_7 = Electrode(self.samp_rate, (-8.2,-10), "7")
-        self.Electrode_8 = Electrode(self.samp_rate, (24.6,-10), "8")
-        self.Electrode_9 = Electrode(self.samp_rate, (-24.6,-30), "9")
-        self.Electrode_10 = Electrode(self.samp_rate, (8.2,-30), "10")
-        self.Electrode_11 = Electrode(self.samp_rate, (-8.2,-50), "11")
-        self.Electrode_12 = Electrode(self.samp_rate, (24.6,-50), "12")
+        self.Electrode_1 = MCE.Electrode(self.samp_rate, (-24.6,50), "1")
+        self.Electrode_2 = MCE.Electrode(self.samp_rate, (8.2,50), "2")
+        self.Electrode_3 = MCE.Electrode(self.samp_rate, (-8.2,30), "3")
+        self.Electrode_4 = MCE.Electrode(self.samp_rate, (24.6,30), "4")
+        self.Electrode_5 = MCE.Electrode(self.samp_rate, (-24.6,10), "5")
+        self.Electrode_6 = MCE.Electrode(self.samp_rate, (8.2,10), "6")
+        self.Electrode_7 = MCE.Electrode(self.samp_rate, (-8.2,-10), "7")
+        self.Electrode_8 = MCE.Electrode(self.samp_rate, (24.6,-10), "8")
+        self.Electrode_9 = MCE.Electrode(self.samp_rate, (-24.6,-30), "9")
+        self.Electrode_10 = MCE.Electrode(self.samp_rate, (8.2,-30), "10")
+        self.Electrode_11 = MCE.Electrode(self.samp_rate, (-8.2,-50), "11")
+        self.Electrode_12 = MCE.Electrode(self.samp_rate, (24.6,-50), "12")
         self.Shank = [self.Electrode_1, self.Electrode_2, self.Electrode_3, self.Electrode_4, self.Electrode_5, self.Electrode_6, self.Electrode_7, self.Electrode_8, self.Electrode_9, self.Electrode_10, self.Electrode_11, self.Electrode_12]
         
         #shank geometry
@@ -88,7 +91,7 @@ class Neuropixel_Shank:
         bounding  = (-35, 35, -40, 40, 0)
         
         #update self.tissue with the neuron
-        self.tissue = Neuron(self.samp_rate, origin, bounding, self.persist_len)
+        self.tissue = MCN.Neuron(self.samp_rate, origin, bounding, self.persist_len)
         
         #get discretization of time bins
         time_bins = np.arange(self.tissue.tvec[0], self.tissue.tvec[-1], 1/self.samp_rate )
