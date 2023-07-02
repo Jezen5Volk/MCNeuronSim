@@ -1,1 +1,1 @@
-Python package
+A python package to simulate the behavior of neurons using the Kratky-Porod wormlike chain polymer model. To perform the Monte Carlo analysis, the simulation utilizes the persistence length of neurons to model their behavior in three dimensional space as they interact with a two dimensional microelectrode array that is used for in vivo studies. The goal of the simulation is to validate the experimental results of the Kosik groups's spike sorting algorithm as compared to the industry standard spike sorting algorithm, Kilosort.
