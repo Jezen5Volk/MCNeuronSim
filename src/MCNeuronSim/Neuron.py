@@ -164,13 +164,19 @@ class Neuron:
     def plot_neuron(self):
         ax = plt.figure(figsize=(15,7)).add_subplot(projection='3d')
 
+        # Plot neuron origin
+        start_x = np.ones(200) * self.origin[0]
+        start_y = np.ones(200) * self.origin[1]
+        start_z = np.linspace(0, self.origin[2], 200)
+        ax.plot3D(self.origin[0], self.origin[1], self.origin[2], marker='o', c='cyan')
+        ax.plot3D(start_x, start_y, start_z, c='cyan')
+
         #plot neuron
         ax.plot3D(self.x_steps, self.y_steps, self.z_steps, c = 'red')
-        ax.plot3D(self.x_steps[0], self.y_steps[0], self.z_steps[0], marker = 'o', c = 'cyan')
         ax.set_xlabel("X", fontsize = 15, fontweight= "bold")
         ax.set_ylabel("Y", fontsize = 15, fontweight= "bold")
         ax.set_zlabel("Z", fontsize = 15, fontweight="bold")
-
+        ax.set_zlim(0, self.origin[2]*2)
 
         #plot neuron growth boundaries in black
         z = np.zeros(200)
@@ -184,3 +190,5 @@ class Neuron:
         ax.plot3D(b1, ybound, z, c='black')
         ax.plot3D(xbound, b2, z, linestyle = 'dashed', c = 'black')
         ax.plot3D(xbound, b3, z, linestyle = 'dashed', c='black')
+
+        return ax
