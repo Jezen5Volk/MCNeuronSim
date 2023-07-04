@@ -162,21 +162,25 @@ class Neuron:
     
     
     def plot_neuron(self):
-        fig = plt.figure(figsize=(15,7))
+        ax = plt.figure(figsize=(15,7)).add_subplot(projection='3d')
 
-        ax = fig.add_subplot(1, 2, 1, projection='3d')
-        ax.plot3D(self.x_steps, self.y_steps, self.z_steps, 'red') 
-        ax.set_xlabel("X", fontweight= "bold")
-        ax.set_ylabel("Y", fontweight= "bold")
-        ax.set_xlim(self.bounding[0], self.bounding[1])
-        ax.set_ylim(self.bounding[2],self.bounding[3])
-        ax.view_init(90, 270)
+        #plot neuron
+        ax.plot3D(self.x_steps, self.y_steps, self.z_steps, c = 'red')
+        ax.plot3D(self.x_steps[0], self.y_steps[0], self.z_steps[0], marker = 'o', c = 'cyan')
+        ax.set_xlabel("X", fontsize = 15, fontweight= "bold")
+        ax.set_ylabel("Y", fontsize = 15, fontweight= "bold")
+        ax.set_zlabel("Z", fontsize = 15, fontweight="bold")
 
-        ax = fig.add_subplot(1, 2, 2, projection='3d')
-        ax.plot3D(self.x_steps, self.y_steps, self.z_steps, 'red') 
-        ax.set_xlabel("X", fontweight= "bold")
-        ax.set_zlabel("Z", fontweight= "bold")
-        ax.set_xlim(self.bounding[0], self.bounding[1])
-        ax.set_ylim(self.bounding[2],self.bounding[3])
-        ax.set_zlim(self.bounding[4], 10)
-        ax.view_init(0, -90)
+
+        #plot neuron growth boundaries in black
+        z = np.zeros(200)
+        b0 = np.ones(200)*self.bounding[0]
+        b1 = np.ones(200)*self.bounding[1]
+        b2 = np.ones(200)*self.bounding[2]
+        b3 = np.ones(200)*self.bounding[3]
+        xbound = np.linspace(self.bounding[0], self.bounding[1], 200)
+        ybound = np.linspace(self.bounding[2], self.bounding[3], 200)
+        ax.plot3D(b0, ybound, z, c='black')
+        ax.plot3D(b1, ybound, z, c='black')
+        ax.plot3D(xbound, b2, z, linestyle = 'dashed', c = 'black')
+        ax.plot3D(xbound, b3, z, linestyle = 'dashed', c='black')
