@@ -99,11 +99,29 @@ class Electrode:
         
         
     #contour plot electrode activity
-    def plot_electrode(self):
+    def contour_plot(self):
         plt.contourf(self.x, self.y, self.activity_meshgrid, vmin = -1, vmax = 1, cmap = cmap)
         plt.axis('scaled')
         plt.show()
-        
+
+
+
+    #3D plot electrode boundary
+    def plot_3D(self, ax):
+        length = len(self.x)
+        z = np.zeros(length)
+        l_bound = np.ones(length)*(self._center[0] - 6)
+        r_bound = np.ones(length)*(self._center[0] + 6)
+        b_bound = np.ones(length)*(self._center[1] - 6)
+        t_bound = np.ones(length)*(self._center[1] + 6)
+
+        ax.plot3D(l_bound, self.y, z, c = 'black')
+        ax.plot3D(r_bound, self.y, z, c='black')
+        ax.plot3D(self.x, b_bound, z, c='black')
+        ax.plot3D(self.x, t_bound, z, c='black')
+
+        return ax
+
     
     
     #Plot the voltage at the electrode as a function of time
