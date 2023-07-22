@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython import display
 from matplotlib.colors import ListedColormap
+from functools import partial
 
 #defining custom colormap
-cmap = ListedColormap(["grey","black","white"])
+cmap = ListedColormap(["white","black","cyan"])
 
 
 
@@ -70,7 +71,6 @@ class Neuropixel_Shank:
         #setup stuff for animation
         self.fig = None
         self.ax = None
-        
         
         #time bin indices for monte carlo analysis
         self.time_bin_indices = []
@@ -159,7 +159,7 @@ class Neuropixel_Shank:
     
     
     #Retrieves the activity level of each electrode and updates the shank activity meshgrid with these values    
-    def update_shank_activity(self, frame_num):
+    def update_2Dshank_activity(self, frame_num):
         for electrode in self.Shank:
             x = electrode.x
             y = electrode.y
@@ -184,12 +184,17 @@ class Neuropixel_Shank:
 
             
     #contour plot of shank activity_meshgrid + 2D projection of 3D neuron atop the shank
-    def plot_shank(self, frame_num):
-        #obtain indices of discretized time bins
-        index = frame_num*10
-       
+    def plot_2Dshank(self, frame_num = 0, anim = False):
+        #framework for drawing images for the animation versus drawing still images
+        if anim == True:
+            self.ax.cla() # clear axis each frame
+            index = frame_num * 10 #animation only draws every tenth frame to speed it up
+        else:
+            self.fig, self.ax = plt.subplots(figsize=(7, 8))
+            index = frame_num
+
         #update shank_activity
-        self.update_shank_activity(index)
+        self.update_2Dshank_activity(index)
         
         #Contour Plot
         self.ax.contourf(self.x, self.y, self.activity_meshgrid, vmin = -1, vmax = 1,cmap = cmap)
@@ -197,6 +202,9 @@ class Neuropixel_Shank:
         
         #Neuron Plot
         if self.tissue is not None:
+            #plot neuron end point
+            self.ax.plot(self.tissue.x_steps[-1], self.tissue.y_steps[-1], linestyle = '', marker = 'o', color = 'black')
+
             #plot neuron
             self.ax.plot(self.tissue.x_steps, self.tissue.y_steps, color = 'red')
             
@@ -220,33 +228,102 @@ class Neuropixel_Shank:
         
         return frame
             
-        
+
+
     #Animation of action potential as it translates down the neuron, with electrode activity included
-    def animate_shank(self, image = False, frame_num = 0):        
-        figure, axis = plt.subplots(figsize = (7,8))
-        self.fig = figure
-        self.ax = axis
-        #Turn plt output off so that the animation goes to the embedded html5 video
-        plt.ioff()
-        
+    def animate_2Dshank(self):
+        #setup figure
+        self.fig, self.ax = plt.subplots(figsize=(7, 8))
+        plt.close() #prevent it from drawing unwanted stills
+
         #animate and display html5 video
-        anim = animation.FuncAnimation(self.fig, self.plot_shank, frames = len(self.tissue.tvec)//10, interval=50) #animate every tenth frame
+        anim = animation.FuncAnimation(self.fig, partial(self.plot_2Dshank, anim = True), frames = len(self.tissue.tvec)//10, interval=50) #animate every tenth frame
         video = anim.to_html5_video()
         html = display.HTML(video)
         display.display(html)
-        
-        #close animation stream and reenable plt output
-        plt.close()
-        plt.ion()
-        
-        #generate still image if requested
-        if image == True:
-            self.plot_shank(frame_num)
-        
+
         return anim
-    
-    
-    
+
+
+
+    #3D plot of shank activity + 3D neuron
+    def plot_3Dshank(self, frame_num = 0, anim = False):
+        # framework for drawing images for the animation versus drawing still images
+        if anim == True:
+            self.ax.cla()  # clear axis each frame
+            index = frame_num * 10  # animation only draws every tenth frame to speed it up
+        else:
+            self.fig = plt.figure(figsize=(15, 7))
+            self.ax = self.fig.add_subplot(projection='3d')
+            index = frame_num
+
+        # update shank_activity
+        for electrode in self.Shank:
+            electrode.plot_3D(self.ax, index)
+
+        # Neuron Plot
+        if self.tissue is not None:
+            # plot neuron end point
+            end_x = np.ones(200) * self.tissue.x_steps[-1]
+            end_y = np.ones(200) * self.tissue.y_steps[-1]
+            end_z = np.linspace(0, self.tissue.z_steps[-1], 200)
+            self.ax.plot3D(end_x, end_y, end_z, c='black')
+
+            # plot neuron growth boundaries in black
+            z = np.zeros(200)
+            b0 = np.ones(200) * self.tissue.bounding[0]
+            b1 = np.ones(200) * self.tissue.bounding[1]
+            b2 = np.ones(200) * self.tissue.bounding[2]
+            b3 = np.ones(200) * self.tissue.bounding[3]
+            xbound = np.linspace(self.tissue.bounding[0], self.tissue.bounding[1], 200)
+            ybound = np.linspace(-60, 60, 200)
+            self.ax.plot3D(b0, ybound, z, c='black')
+            self.ax.plot3D(b1, ybound, z, c='black')
+            self.ax.plot3D(xbound, b2, z, linestyle='dashed', c='black')
+            self.ax.plot3D(xbound, b3, z, linestyle='dashed', c='black')
+
+            # plot neuron
+            self.ax.plot3D(self.tissue.x_steps, self.tissue.y_steps, self.tissue.z_steps, c='red')
+            self.ax.plot3D(self.tissue.x_steps[index], self.tissue.y_steps[index], self.tissue.z_steps[index], linestyle='', marker='o', color='cyan')
+            start_x = np.ones(200) * self.tissue.x_steps[index]
+            start_y = np.ones(200) * self.tissue.y_steps[index]
+            start_z = np.linspace(0, self.tissue.z_steps[index], 200)
+            self.ax.plot3D(start_x, start_y, start_z, c='cyan')
+
+        #labels + lims
+        self.ax.set_xlim(-60, 60)
+        self.ax.set_ylim(-60, 60)
+        self.ax.set_zlim(-1, 29)
+        self.ax.set_xlabel(r"X [$\mu$m]", fontsize=15, fontweight="bold")
+        self.ax.set_ylabel(r"Y [$\mu$m]", fontsize=15, fontweight="bold")
+        self.ax.set_zlabel(r"Z [$\mu$m]", fontsize=15, fontweight="bold")
+        self.ax.set_title("Electrode Activity", fontweight="bold", fontsize=25)
+        self.ax.grid(False)
+        plt.show()
+
+        # Returning axis object as "frame"
+        frame = self.ax
+
+        return frame
+
+
+
+    # Animation of action potential as it translates down the neuron, with electrode activity included
+    def animate_3Dshank(self):
+        self.fig = plt.figure(figsize=(15, 7))
+        self.ax = self.fig.add_subplot(projection='3d')
+        plt.close() #prevent it from drawing unwanted stills
+
+        # animate and display html5 video
+        anim = animation.FuncAnimation(self.fig, partial(self.plot_3Dshank, anim = True), frames=len(self.tissue.tvec) // 10, interval=50)  # animate every tenth frame
+        video = anim.to_html5_video()
+        html = display.HTML(video)
+        display.display(html)
+
+        return anim
+
+
+
     #Reset the readings from the entire neuropixel shank
     def full_reset(self):
         #reset electrode
@@ -279,24 +356,17 @@ class Neuropixel_Shank:
             kilosort = 1
             prop = 0
             
-        #More than one elctrode is excited
+        #More than one electrode is excited
         elif num_electrodes > 1: 
             kilosort = 1
-            
-            #If the maximum simultaneous electrode activity is 1, then no electrodes overlap in time
-            if max(tot_activity) == 1:
-                prop = 1
-            #check time bin simultaneity 
-            elif max(tot_activity) > 1:
-                #if the difference in magnitude between two activity time bins is one, they're detected in two time bins and prop detects it
-                activity_diff = np.diff(tot_activity) 
-                
-                #thus if the number of indices where this occurs is greater than zero, prop detects the neuron
-                if len(np.where(activity_diff == 1)[0]) > 0:
-                    prop = 1
-                else: 
-                    prop = 0
 
+            #it is a propagation detection so long as not every electrode was excited in the same time bin
+            if max(tot_activity) < num_electrodes:
+                prop = 1
+            else:
+                prop = 0
+
+        #If no electrodes are excited, then there is no detection
         else:
             kilosort = 0
             prop = 0
