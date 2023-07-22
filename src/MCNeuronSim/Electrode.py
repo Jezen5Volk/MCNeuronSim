@@ -8,7 +8,7 @@ channels = scipy.io.loadmat("channels.mat")
 RMS_threshold = channels["channels"][:,2] * 0.195 #the third column of channels contains the rms threshold, multiply by 0.195 to convert to microvolts
 
 #defining custom colormap
-cmap = ListedColormap(["grey","black","white"])
+cmap = ListedColormap(["white","black","cyan"])
 
 
 class Electrode:
@@ -107,7 +107,7 @@ class Electrode:
 
 
     #3D plot electrode boundary
-    def plot_3D(self, ax):
+    def plot_3D(self, ax, index = 0):
         length = len(self.x)
         z = np.zeros(length)
         l_bound = np.ones(length)*(self._center[0] - 6)
@@ -115,10 +115,16 @@ class Electrode:
         b_bound = np.ones(length)*(self._center[1] - 6)
         t_bound = np.ones(length)*(self._center[1] + 6)
 
-        ax.plot3D(l_bound, self.y, z, c = 'black')
-        ax.plot3D(r_bound, self.y, z, c='black')
-        ax.plot3D(self.x, b_bound, z, c='black')
-        ax.plot3D(self.x, t_bound, z, c='black')
+        if self.a_readout[index] == 0:
+            activity_color = 'black'
+        elif self.a_readout[index] == 1:
+            activity_color = 'cyan'
+
+
+        ax.plot3D(l_bound, self.y, z, c = activity_color)
+        ax.plot3D(r_bound, self.y, z, c= activity_color)
+        ax.plot3D(self.x, b_bound, z, c= activity_color)
+        ax.plot3D(self.x, t_bound, z, c= activity_color)
 
         return ax
 
