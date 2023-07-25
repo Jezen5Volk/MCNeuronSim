@@ -247,7 +247,7 @@ class Neuropixel_Shank:
 
 
     #3D plot of shank activity + 3D neuron
-    def plot_3Dshank(self, frame_num = 0, anim = False):
+    def plot_3Dshank(self, frame_num = 0, activity_overlay = False, anim = False):
         # framework for drawing images for the animation versus drawing still images
         if anim == True:
             self.ax.cla()  # clear axis each frame
@@ -257,9 +257,14 @@ class Neuropixel_Shank:
             self.ax = self.fig.add_subplot(projection='3d')
             index = frame_num
 
-        # update shank_activity
-        for electrode in self.Shank:
-            electrode.plot_3D(self.ax, index)
+        if activity_overlay == True:
+            #highlight every electrode that lights up
+            for electrode in self.Shank:
+                electrode.plot_3D(self.ax, np.array(electrode.a_readout).argmax())
+        else:
+            # update shank_activity
+            for electrode in self.Shank:
+                electrode.plot_3D(self.ax, index)
 
         # Neuron Plot
         if self.tissue is not None:
@@ -293,7 +298,7 @@ class Neuropixel_Shank:
         #labels + lims
         self.ax.set_xlim(-60, 60)
         self.ax.set_ylim(-60, 60)
-        self.ax.set_zlim(-1, 29)
+        self.ax.set_zlim(-1, 119)
         self.ax.set_xlabel(r"X [$\mu$m]", fontsize=15, fontweight="bold")
         self.ax.set_ylabel(r"Y [$\mu$m]", fontsize=15, fontweight="bold")
         self.ax.set_zlabel(r"Z [$\mu$m]", fontsize=15, fontweight="bold")
