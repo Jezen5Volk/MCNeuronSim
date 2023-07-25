@@ -121,7 +121,8 @@ class Neuron:
         elif y_f > self.bounding[3]:
             self.grow = False
         if z_f < self.bounding[4]:
-            z_f = self.bounding[4] #this is a 2d array
+            z_f = self.bounding[4] #the neuropixel shank is 2-dimensional
+            self.theta = np.pi/2 # reset the angle to be orthogonal to the plane of the shank
         
         return x_f, y_f, z_f, t_f, v_f
     
