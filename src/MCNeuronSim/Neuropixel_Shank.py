@@ -296,9 +296,13 @@ class Neuropixel_Shank:
             self.ax.plot3D(start_x, start_y, start_z, c='cyan')
 
         #labels + lims
-        self.ax.set_xlim(-60, 60)
-        self.ax.set_ylim(-60, 60)
-        self.ax.set_zlim(-1, 119)
+        self.ax.set_box_aspect((70, 120, 21))
+        self.ax.set_zlim(-1, 20) #ensure that zlim range matches z_aspect (you have to do it manually)
+        self.ax.set_zticks([20])
+        self.ax.set_xticks([-20, 0, 20])
+        self.ax.xaxis.labelpad=15
+        self.ax.yaxis.labelpad=20
+        self.ax.zaxis.labelpad=15
         self.ax.set_xlabel(r"X [$\mu$m]", fontsize=15, fontweight="bold")
         self.ax.set_ylabel(r"Y [$\mu$m]", fontsize=15, fontweight="bold")
         self.ax.set_zlabel(r"Z [$\mu$m]", fontsize=15, fontweight="bold")
@@ -366,10 +370,10 @@ class Neuropixel_Shank:
             kilosort = 1
 
             #it is a propagation detection so long as not every electrode was excited in the same time bin
-            if max(tot_activity) < num_electrodes:
-                prop = 1
-            else:
+            if max(tot_activity) == np.sum(tot_activity):
                 prop = 0
+            else:
+                prop = 1
 
         #If no electrodes are excited, then there is no detection
         else:
