@@ -219,7 +219,6 @@ class Neuropixel_Shank:
         #Labels
         self.ax.set_xlabel(r"X [$\mu$m]", fontweight = "bold", fontsize = 15)
         self.ax.set_ylabel(r"Y [$\mu$m]", fontweight = "bold", fontsize = 15)
-        self.ax.set_title("Electrode Activity", fontweight = "bold", fontsize = 25)
         self.ax.set_xlim(-35,35)
         plt.show()
         
@@ -306,7 +305,6 @@ class Neuropixel_Shank:
         self.ax.set_xlabel(r"X [$\mu$m]", fontsize=15, fontweight="bold")
         self.ax.set_ylabel(r"Y [$\mu$m]", fontsize=15, fontweight="bold")
         self.ax.set_zlabel(r"Z [$\mu$m]", fontsize=15, fontweight="bold")
-        self.ax.set_title("Electrode Activity", fontweight="bold", fontsize=25)
         self.ax.grid(False)
         plt.show()
 
