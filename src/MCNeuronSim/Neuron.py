@@ -183,8 +183,8 @@ class Neuron:
         ax.set_xlabel("X", fontsize = 15, fontweight= "bold")
         ax.set_ylabel("Y", fontsize = 15, fontweight= "bold")
         ax.set_zlabel("Z", fontsize = 15, fontweight="bold")
-        ax.set_zlim(0, self.origin[2]*4)
-        ax.set_box_aspect((self.bounding[1]-self.bounding[0], self.bounding[3]-self.bounding[2], self.origin[2]*4))
+        ax.set_zlim(0, self.z_steps[-1])
+        ax.set_box_aspect((self.bounding[1]-self.bounding[0], self.bounding[3]-self.bounding[2], self.z_steps[-1]))
 
         #plot neuron growth boundaries in black
         z = np.zeros(200)
