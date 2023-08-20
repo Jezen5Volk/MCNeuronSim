@@ -11,5 +11,7 @@ Formal Results to be included in an upcoming publication coming to theaters near
 
 Picture Gallery:
 
-![image](https://github.com/Jezen5Volk/MCNeuronSim/assets/138075884/1f4b612b-12ed-4589-8f02-2667ee995a7c)
+![2dprop ticks](https://github.com/Jezen5Volk/MCNeuronSim/assets/138075884/892a9af0-2529-44bf-bf86-3cac6558873d)
+![3dprop ticks](https://github.com/Jezen5Volk/MCNeuronSim/assets/138075884/7359fb1c-c093-4c16-a11c-778bdbb9a0ef)
+
 
