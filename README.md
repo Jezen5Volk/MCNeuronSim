@@ -13,5 +13,7 @@ Picture Gallery:
 
 ![2dprop ticks](https://github.com/Jezen5Volk/MCNeuronSim/assets/138075884/892a9af0-2529-44bf-bf86-3cac6558873d)
 ![3dprop ticks](https://github.com/Jezen5Volk/MCNeuronSim/assets/138075884/7359fb1c-c093-4c16-a11c-778bdbb9a0ef)
+<img width="285" alt="Monte Carlo Simulation Results" src="https://github.com/Jezen5Volk/MCNeuronSim/assets/138075884/5f1419fc-6723-44d9-9583-1e9663176090">
+
 
 
